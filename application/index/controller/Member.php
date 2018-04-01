@@ -11,9 +11,10 @@ namespace app\index\controller;
 use \app\common\controller\userBase;
 
 class Member extends userBase
+//class Member extends \think\Controller
 {
 
-    public function _initialize()
+    public function _init()
     {
     }
 
@@ -50,10 +51,17 @@ class Member extends userBase
     public function signOut(\think\Request $request)
     {
         $token = $request->param('token');
-        if(!\Cache::rm($token)){
+        $data = json_decode(\Cache::get($token), true);
+
+        // 删除token
+        $rm_data = \Cache::rm($token);
+        $rm_uid = \Cache::rm($data['uid']);
+
+        if(!$rm_data || !$rm_uid){
             $result = ['code' => 1, 'msg' => '操作失败，请稍后再试'];
             return json_encode($result);
         }
+
         $result = ['code' => 0, 'msg' => '操作成功'];
         return json_encode($result);
     }
