@@ -27,17 +27,17 @@ class Member extends userBase
     public function getMemberInfo(\think\Request $request) : string
     {
         $token = $request->param('token');
-        $data = \GuzzleHttp\json_decode(\Cache::get($token), true);
+        $data = json_decode(\Cache::get($token), true);
         $map['id'] = $data['uid'];
 
         $memberinfo = \think\Db::name('member')->where($map)->find();
         if(!$memberinfo){
             $result = ['code' => 1, 'msg' => '用户不存在'];
-            return \GuzzleHttp\json_encode($result);
+            return json_encode($result);
         }
 
         $result = ['code' => 200, 'msg' => '操作成功', 'data' => $memberinfo];
-        return \GuzzleHttp\json_encode($result);
+        return json_encode($result);
     }
 
     /**
@@ -52,10 +52,10 @@ class Member extends userBase
         $token = $request->param('token');
         if(!\Cache::rm($token)){
             $result = ['code' => 1, 'msg' => '操作失败，请稍后再试'];
-            return \GuzzleHttp\json_encode($result);
+            return json_encode($result);
         }
         $result = ['code' => 0, 'msg' => '操作成功'];
-        return \GuzzleHttp\json_encode($result);
+        return json_encode($result);
     }
 
 }

@@ -19,7 +19,11 @@ class Config
 
         config('_pwd', 'weixin520');// 密码加盐
 
-        config('_phoneCode', 300);// 短信验证码生存时间
+        config('_phoneCodeExpiration', 300);// 短信验证码生存时间
+
+        config('_tokenExpiration', 7200);// token生存时间
+
+        config('_originalKey', md5('dears'));// 原始key
 
     }
 

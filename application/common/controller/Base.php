@@ -2,6 +2,7 @@
 
 namespace app\common\controller;
 
+use \think\Cache;
 
 class Base extends \think\Controller
 {
@@ -9,7 +10,7 @@ class Base extends \think\Controller
     {
         $this->crossDomain();// 允许跨域
         $this->environmentAuth();// 环境验证
-        $this->checkAuth();// 参数验证
+        $this->checkToken();// token验证
         $this->_initialize();// 初始化
     }
 
@@ -51,37 +52,14 @@ class Base extends \think\Controller
     }
 
     /**
-     * checkAuth [token验证]
-     *
-     * author dear
-     * @return array
-     */
-    private function checkAuth()
-    {
-        $param = $this->request->param();// 获取参数
-
-        // token验证
-        $this->checkToken($param);
-
-        // 单点登录
-        $this->singleSignOn($param['token']);
-    }
-
-    /**
      * checkToken [token验证]
      *
-     * author dear
-     * @param $data
+     * @author dear
      */
-    private function checkToken($param)
+    private function checkToken()
     {
+        $param = $this->request->param();// 获取参数
         $data = json_decode(\Cache::get($param['token']), true);
-
-        // 回收过期token
-        if($data['expiration'] <= time()){
-            \Cache::rm($param['token']);// 回收token
-            \Cache::rm($data['uid']);// 回收单点登录旧token
-        }
 
         // 判断token值是否存在
         if(!$data){
@@ -90,7 +68,7 @@ class Base extends \think\Controller
         }
 
         // 重复请求验证
-        $request_count = \Cache::get($param['token'] . $param['random']);
+        $request_count = \Cache::remember($param['token'] . $param['random'], 0, 10);
         if($request_count < 4){
             \Cache::Inc($param['token'] . $param['random']);
         }else{
@@ -114,30 +92,7 @@ class Base extends \think\Controller
         };
 
         // token生存时间
-        $data['expiration'] = time() + 7200;
-        \Cache::set($param['token'], \GuzzleHttp\json_encode($data));
-    }
-
-    /**
-     * singleSignOn [单点登录]
-     *
-     * author dear
-     * @param $token
-     */
-    private function singleSignOn($token)
-    {
-        $data = json_decode(\Cache::get($token), true);
-        echo $token."\n";
-        echo \Cache::get($data['uid'])."\n\n";
-        // 单点登录
-        if($token != \Cache::get($data['uid'])){
-            // 删除老token
-            \Cache::rm(\Cache::get($data['uid']));
-            // 删除单点登录key
-            \Cache::rm($data['uid']);
-        }
-        echo $token."\n";
-        echo \Cache::get($data['uid'])."\n\n";
+        \Cache::set($param['token'], json_encode($data), 7200);
     }
 
     /**
