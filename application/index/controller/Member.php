@@ -11,7 +11,6 @@ namespace app\index\controller;
 use \app\common\controller\userBase;
 
 class Member extends userBase
-//class Member extends \think\Controller
 {
 
     public function _init()
@@ -21,7 +20,7 @@ class Member extends userBase
     /**
      * getMemberInfo [获取用户信息]
      *
-     * author dear
+     * @author dear
      * @param \think\Request $request
      * @return string
      */

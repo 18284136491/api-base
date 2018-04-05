@@ -32,6 +32,9 @@ class userBase extends Base
             $result = ['code' => 1, 'msg' => '您还没有登录，请先登录'];
             response($result);
         }
+
+        // 单点登录生存时间
+        \Cache::set($param['uid'], json_encode($data), config('_tokenExpiration'));
     }
 
     protected function _init()

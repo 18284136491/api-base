@@ -92,7 +92,7 @@ class Base extends \think\Controller
         };
 
         // token生存时间
-        \Cache::set($param['token'], json_encode($data), 7200);
+        \Cache::set($param['token'], json_encode($data), config('_tokenExpiration'));
     }
 
     /**

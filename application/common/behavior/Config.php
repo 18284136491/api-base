@@ -13,10 +13,6 @@ class Config
 {
     public function run()
     {
-
-
-
-
         config('_pwd', 'weixin520');// 密码加盐
 
         config('_phoneCodeExpiration', 300);// 短信验证码生存时间

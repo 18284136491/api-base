@@ -100,8 +100,8 @@ class Login extends \app\common\controller\Base
 
         // 保存登录信息
         $data['uid'] = $member['id'];
-        \Cache::set($param['token'], json_encode($data));// cache重新赋值
-        \Cache::set($data['uid'], $param['token']);// 保存登录的token
+        \Cache::set($param['token'], json_encode($data), config('_tokenExpiration'));// cache重新赋值
+        \Cache::set($data['uid'], $param['token'], config('_tokenExpiration'));// 保存登录的token
         return json_encode(['code' => 200, 'msg' => '操作成功']);
     }
 
