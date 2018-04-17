@@ -93,8 +93,6 @@ function getUuid(string $prefix='') : string
     return strtoupper($prefix . $uuid);
 }
 
-
-
 /**
  * pregVerify [正则验证]
  *
@@ -125,6 +123,62 @@ function pregVerify($str, $type){
         return false;
     }
     return preg_match($patterns[$type], $str) === 1;
+}
+
+/**
+ * arraySequence [二维数组根据字段进行排序]\
+ *
+ * author dear
+ * @params array $array 需要排序的数组
+ * @params string $field 排序的字段
+ * @params string $sort 排序顺序标志 SORT_DESC 降序；SORT_ASC 升序
+ * @return array
+ */
+function arraySequence($array, $field, $sort = 'SORT_DESC') : array
+{
+    $arrSort = array();
+    foreach ($array as $key => $val) {
+        foreach ($val as $key1 => $val1) {
+            $arrSort[$key1][$key] = $val1;
+        }
+    }
+    array_multisort($arrSort[$field], constant($sort), $array);
+    return $array;
+}
+
+/**
+ * xmlToArray [xml对象转数组]
+ *
+ * author dear
+ * @params array $array 需要排序的数组
+ * @return array
+ */
+function xmlToArray($xml) : array
+{
+    //将XML转为array
+    $array_data = json_decode(json_encode(simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA)), true);
+    return $array_data;
+}
+
+/**
+ * xmlToArray [数组转xml对象]
+ *
+ * author dear
+ * @params array $array 需要排序的数组
+ * @return array
+ */
+function arrayToXml($arr)
+{
+    $xml = "<xml>";
+    foreach ($arr as $key=>$val){
+        if (is_numeric($val)){
+            $xml.="<".$key.">".$val."</".$key.">";
+        }else{
+            $xml.="<".$key."><![CDATA[".$val."]]></".$key.">";
+        }
+    }
+    $xml.="</xml>";
+    return $xml;
 }
 
 
